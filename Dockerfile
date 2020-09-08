@@ -14,7 +14,7 @@ COPY start.sh start.sh
 
 RUN apt-get update && apt-get install -y curl && \
     curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-    apt-get update && apt-get install -y sudo git nodejs python3 python3-pip virtualenv openjdk-11-jdk maven gradle gcc g++ make openssh-client openssh-server && \
+    apt-get install -y sudo git nodejs python3 python3-pip virtualenv openjdk-11-jdk maven gradle gcc g++ make openssh-client openssh-server && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -q -y && \
     groupadd -g $DOCKER_GID admin && \
     useradd -g admin -m -u $DOCKER_UID admin && \
