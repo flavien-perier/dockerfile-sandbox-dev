@@ -1,6 +1,6 @@
 # Dockerfile Sandbox-dev
 
-Test environment accessible with SSH.
+Development environment accessible with SSH.
 
 Contains development environments for:
 
