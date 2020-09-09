@@ -13,8 +13,6 @@ jobs:
     - name: install buildx
       id: buildx
       uses: crazy-max/ghaction-docker-buildx@v1
-      with:
-        version: latest
     - name: Set env
       run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
     - name: Login to DockerHub Registry
