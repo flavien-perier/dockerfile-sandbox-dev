@@ -1,3 +1,7 @@
+![license](https://badgen.net/github/license/flavien-perier/dockerfile-sandbox-dev)
+[![docker pulls](https://badgen.net/docker/pulls/flavienperier/sandbox-dev)](https://hub.docker.com/r/flavienperier/sandbox-dev)
+[![ci status](https://badgen.net/github/checks/flavien-perier/dockerfile-sandbox-dev)](https://github.com/flavien-perier/dockerfile-sandbox-dev)
+
 # Dockerfile Sandbox-dev
 
 Development environment accessible with SSH.
