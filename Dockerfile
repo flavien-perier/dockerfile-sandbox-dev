@@ -1,19 +1,20 @@
 FROM debian
 
-LABEL maintainer="Flavien PERIER <perier@flavien.io>"
-LABEL version="1.0"
-LABEL description="Debian dev sandbox"
+LABEL maintainer="Flavien PERIER <perier@flavien.io>" \
+      version="1.0.0" \
+      description="Debian dev sandbox"
 
-ARG DOCKER_UID=500
-ARG DOCKER_GID=500
+ARG DOCKER_UID="500"
+ARG DOCKER_GID="500"
 
-ENV PASSWORD=password
+ENV PASSWORD="password"
 
 WORKDIR /root
+VOLUME /home/admin
 COPY start.sh start.sh
 
 RUN apt-get update && apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y sudo git nodejs python3 python3-pip virtualenv openjdk-11-jdk maven gradle gcc g++ make openssh-client openssh-server && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -q -y && \
     groupadd -g $DOCKER_GID admin && \
@@ -25,8 +26,6 @@ RUN apt-get update && apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/* && \
     chown root:root start.sh && \
     chmod 750 start.sh
-
-VOLUME /home/admin
 
 EXPOSE 22
 EXPOSE 8080
