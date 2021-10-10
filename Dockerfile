@@ -4,19 +4,20 @@ LABEL maintainer="Flavien PERIER <perier@flavien.io>" \
       version="1.0.0" \
       description="Debian dev sandbox"
 
-ARG DOCKER_UID="500"
-ARG DOCKER_GID="500"
+ARG DOCKER_UID="500" \
+    DOCKER_GID="500"
 
 ENV PASSWORD="password"
 
 WORKDIR /root
 VOLUME /home/admin
-COPY start.sh start.sh
+
+COPY --chown=root:root start.sh start.sh
 
 RUN apt-get update && apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install -y sudo git nodejs python3 python3-pip virtualenv openjdk-11-jdk maven gradle gcc g++ make openssh-client openssh-server && \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -q -y && \
+    curl -s https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y sudo git nodejs python3 python3-pip virtualenv openjdk-17-jdk maven gradle gcc g++ make openssh-client openssh-server && \
+    curl -s https://sh.rustup.rs | bash -s -- -q -y && \
     groupadd -g $DOCKER_GID admin && \
     useradd -g admin -m -u $DOCKER_UID admin && \
     echo "admin ALL=(ALL:ALL) ALL" >> /etc/sudoers && \
@@ -24,10 +25,8 @@ RUN apt-get update && apt-get install -y curl && \
     /etc/init.d/ssh stop && \
     mkdir /run/sshd && \
     rm -rf /var/lib/apt/lists/* && \
-    chown root:root start.sh && \
     chmod 750 start.sh
 
-EXPOSE 22
-EXPOSE 8080
+EXPOSE 22 8080
 
 CMD ./start.sh
