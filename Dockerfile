@@ -15,7 +15,7 @@ VOLUME /home/admin
 COPY --chown=root:root start.sh start.sh
 
 RUN apt-get update && apt-get install -y curl && \
-    curl -s https://deb.nodesource.com/setup_16.x | bash - && \
+    curl -s https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y sudo git nodejs python3 python3-pip virtualenv openjdk-17-jdk maven gradle gcc g++ make openssh-client openssh-server && \
     curl -s https://sh.rustup.rs | bash -s -- -q -y && \
     groupadd -g $DOCKER_GID admin && \
