@@ -1,18 +1,21 @@
 FROM debian
 
-LABEL maintainer="Flavien PERIER <perier@flavien.io>" \
-      version="1.0.0" \
-      description="Debian dev sandbox"
+LABEL org.opencontainers.image.title="Sandbox dev" \
+      org.opencontainers.image.description="Debian dev sandbox" \
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.vendor="flavien.io" \
+      org.opencontainers.image.maintainer="Flavien PERIER <perier@flavien.io>" \
+      org.opencontainers.image.url="https://github.com/flavien-perier/dockerfile-sandbox-dev" \
+      org.opencontainers.image.source="https://github.com/flavien-perier/dockerfile-sandbox-dev" \
+      org.opencontainers.image.licenses="MIT"
 
-ARG DOCKER_UID="500" \
-    DOCKER_GID="500"
+ARG DOCKER_UID="1000" \
+    DOCKER_GID="1000"
 
 ENV PASSWORD="password"
 
 WORKDIR /root
 VOLUME /home/admin
-
-COPY --chown=root:root start.sh start.sh
 
 RUN apt-get update && apt-get install -y curl && \
     curl -s https://deb.nodesource.com/setup_18.x | bash - && \
@@ -24,9 +27,10 @@ RUN apt-get update && apt-get install -y curl && \
     curl -s https://raw.githubusercontent.com/flavien-perier/linux-shell-configuration/master/linux-shell-configuration.sh | bash - && \
     /etc/init.d/ssh stop && \
     mkdir /run/sshd && \
-    rm -rf /var/lib/apt/lists/* && \
-    chmod 750 start.sh
+    rm -rf /var/lib/apt/lists/*
 
 EXPOSE 22 8080
+
+COPY --chown=root:root --chmod=500 start.sh start.sh
 
 CMD ./start.sh
