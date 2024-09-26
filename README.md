@@ -32,7 +32,7 @@ Contains development environments for:
 
 ```yaml
 sandbox-dev:
-    image: flavienperier/sandobx-dev
+    image: flavienperier/sandbox-dev
     container_name: sandbox-dev
     restart: always
     volumes:
