@@ -12,16 +12,18 @@ LABEL org.opencontainers.image.title="Sandbox dev" \
 ARG DOCKER_UID="1000" \
     DOCKER_GID="1000" \
     GRAALVM_VERSION="21" \
+    MAVEN_VERSION="3.9.9" \
     NODE_VERSION="20.17.0"
 
 ENV PASSWORD="password" \
-    PATH="${PATH}:/opt/java/bin:/opt/node/bin"
+    JAVA_HOME="/opt/java" \
+    MAVEN_HOME="/opt/maven" \
+    PATH="${PATH}:/opt/java/bin:/opt/maven/bin:/opt/node/bin"
 
 WORKDIR /root
-VOLUME /home/admin
 
-RUN apt-get update && apt-get install -y curl && \
-    apt-get install -y sudo git python3 python3-pip virtualenv gcc g++ make openssh-client openssh-server && \
+RUN apt-get update && apt-get install -y sudo curl git openssh-server \
+        python3 python3-pip virtualenv make && \
     curl -s https://sh.rustup.rs | bash -s -- -q -y && \
     groupadd -g $DOCKER_GID admin && \
     useradd -g admin -m -u $DOCKER_UID admin && \
@@ -37,13 +39,18 @@ RUN mkdir -p /opt/java && \
     tar xf /tmp/graalvm.tar.gz --strip-components 1 -C /opt/java && \
     rm -f /tmp/graalvm.tar.gz
 
+RUN mkdir -p /opt/maven && \
+    wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O /tmp/maven.tar.gz && \
+    tar xf /tmp/maven.tar.gz --strip-components 1 -C /opt/maven && \
+    rm -f /tmp/maven.tar.gz
+
 RUN mkdir -p /opt/node && \
     export NODE_ARCH=`case $(uname -m) in aarch64) echo arm64;; *) echo x64;; esac` && \
     wget https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-$NODE_ARCH.tar.xz -O /tmp/node.tar.gz && \
     tar xf /tmp/node.tar.gz --strip-components 1 -C /opt/node && \
     rm -f /tmp/node.tar.gz
 
-EXPOSE 22 8080
+EXPOSE 22
 
 COPY --chown=root:root --chmod=500 start.sh start.sh
 

@@ -8,12 +8,10 @@ Development environment accessible with SSH.
 
 Contains development environments for:
 
-- node.js
-- java
-- python
-- c
-- c++
-- rust
+- Rust
+- Java (with GraalVM and Maven)
+- Python
+- NodeJs
 
 ## Env variables
 
@@ -22,7 +20,6 @@ Contains development environments for:
 ## Ports
 
 - 22: SSH (default username is admin)
-- 8080: Open for service execution by the user
 
 ## Volumes
 
@@ -39,7 +36,6 @@ sandbox-dev:
       - ./documents:/home/admin
     ports:
       - 2222:22
-      - 8080:8080
     environment:
       PASSWORD: password
 ```
