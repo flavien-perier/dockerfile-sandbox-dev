@@ -1,7 +1,7 @@
-FROM debian:stable
+FROM fedora:43
 
 LABEL org.opencontainers.image.title="Sandbox dev" \
-      org.opencontainers.image.description="Debian dev sandbox" \
+      org.opencontainers.image.description="Fedora dev sandbox" \
       org.opencontainers.image.version="1.0.0" \
       org.opencontainers.image.vendor="flavien.io" \
       org.opencontainers.image.maintainer="Flavien PERIER <perier@flavien.io>" \
@@ -11,27 +11,23 @@ LABEL org.opencontainers.image.title="Sandbox dev" \
 
 ARG DOCKER_UID="1000" \
     DOCKER_GID="1000" \
-    GRAALVM_VERSION="21" \
-    MAVEN_VERSION="3.9.9" \
-    NODE_VERSION="20.17.0"
+    GRAALVM_VERSION="25" \
+    MAVEN_VERSION="3.9.11" \
+    NODE_VERSION="24.11.0"
 
-ENV PASSWORD="password" \
-    JAVA_HOME="/opt/java" \
-    MAVEN_HOME="/opt/maven" \
-    PATH="${PATH}:/opt/java/bin:/opt/maven/bin:/opt/node/bin"
+ENV PASSWORD="password"
 
-WORKDIR /root
-
-RUN apt-get update && apt-get install -y sudo curl git openssh-server \
-        python3 python3-pip virtualenv make && \
-    curl -s https://sh.rustup.rs | bash -s -- -q -y && \
+RUN dnf install -y make gcc clang python3 openssh-server hostname && \
     groupadd -g $DOCKER_GID admin && \
-    useradd -g admin -m -u $DOCKER_UID admin && \
-    echo "admin ALL=(ALL:ALL) ALL" >> /etc/sudoers && \
-    curl -s https://sh.flavien.io/shell.sh | bash - && \
-    /etc/init.d/ssh stop && \
+    useradd -g admin -d /home/admin -u $DOCKER_UID admin && \
+    curl -s https://sh.flavien.io/shell.sh | sh - && \
+    rm -Rf /etc/skel && \
+    rm -Rf /home/admin/.config/nvim/ && \
+    git clone -q --depth 1 -- https://github.com/LazyVim/starter /home/admin/.config/nvim && \
+    rm -Rf /home/admin/.config/nvim/.git && \
+    chown -R admin:admin /home/admin && \
     mkdir -p /run/sshd && \
-    rm -rf /var/lib/apt/lists/*
+    dnf clean all
 
 RUN mkdir -p /opt/java && \
     export GRAAL_ARCH=`case $(uname -m) in aarch64) echo aarch64;; *) echo x64;; esac` && \
@@ -50,8 +46,11 @@ RUN mkdir -p /opt/node && \
     tar xf /tmp/node.tar.gz --strip-components 1 -C /opt/node && \
     rm -f /tmp/node.tar.gz
 
+WORKDIR /home/admin
+
 EXPOSE 22
 
-COPY --chown=root:root --chmod=500 start.sh start.sh
+COPY --chown=root:root --chmod=500 start.sh /root/start.sh
+COPY --chown=root:root --chmod=644 environment /etc/environment
 
-CMD ./start.sh
+CMD ["/root/start.sh"]

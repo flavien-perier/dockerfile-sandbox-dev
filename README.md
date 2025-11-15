@@ -21,9 +21,6 @@ Contains development environments for:
 
 - 22: SSH (default username is admin)
 
-## Volumes
-
-- /home/admin
 
 ## Docker-compose example
 
@@ -32,8 +29,6 @@ sandbox-dev:
     image: flavienperier/sandbox-dev
     container_name: sandbox-dev
     restart: always
-    volumes:
-      - ./documents:/home/admin
     ports:
       - 2222:22
     environment:
