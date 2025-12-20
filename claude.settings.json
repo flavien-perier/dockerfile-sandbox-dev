@@ -1,0 +1,92 @@
+{
+  "companyAnnouncements": [
+    "flavien.io configuration"
+  ],
+
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "excludedCommands": ["git", "docker", "podman"],
+    "network": {
+      "allowUnixSockets": [
+        "/var/run/docker.sock"
+      ],
+      "allowLocalBinding": true
+    }
+  },
+
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1"
+  },
+
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ -n \"$CLAUDE_TOOL_FILE_PATH\" ]] && git rev-parse --git-dir >/dev/null 2>&1; then git add \"$CLAUDE_TOOL_FILE_PATH\" 2>/dev/null || true; fi"
+          }
+        ]
+      }
+    ]
+  },
+
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Update",
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(mkdir:*)",
+      "Bash(rmdir:*)",
+      "Bash(touch:*)",
+      "Bash(docker compose up:*)",
+      "Bash(docker compose down:*)",
+      "Bash(docker compose build:*)",
+      "Bash(docker compose logs:*)",
+      "Bash(docker run:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker build:*)",
+      "Bash(docker buildx:*)",
+      "Bash(docker logs:*)",
+      "Bash(podman run:*)",
+      "Bash(podman exec:*)",
+      "Bash(podman build:*)",
+      "Bash(podman logs:*)",
+      "Bash(java:*)",
+      "Bash(mvn:*)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(cargo:*)"
+    ],
+    "ask": [
+      "Bash(curl:*)",
+      "Bash(wget:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Bash(git:*)",
+      "Bash(cat:*)",
+      "Bash(sudo:*)",
+      "Bash(pacman:*)",
+      "Bash(yay:*)",
+      "Bash(dnf:*)",
+      "Bash(yum:*)",
+      "Bash(apk:*)",
+      "Bash(apt:*)",
+      "Bash(apt-get:*)",
+      "Bash(dpkg:*)",
+      "Bash(flatpak:*)",
+      "Bash(docker-compose:*)"
+    ]
+  }
+}
