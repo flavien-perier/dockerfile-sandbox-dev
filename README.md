@@ -8,10 +8,14 @@ Development environment accessible with SSH.
 
 Contains development environments for:
 
-- Rust
 - Java (with GraalVM and Maven)
-- Python
 - NodeJs
+
+## Basic usage without ssh
+
+```bash
+docker run --user admin -v "$HOME/.claude:/home/admin/.claude" -it flavienperier/sandbox-dev fish
+```
 
 ## Env variables
 
@@ -20,7 +24,6 @@ Contains development environments for:
 ## Ports
 
 - 22: SSH (default username is admin)
-
 
 ## Docker-compose example
 
